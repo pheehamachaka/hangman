@@ -1,3 +1,4 @@
+from typing import List
 from random import randint
 import re
 
@@ -18,14 +19,13 @@ class Hangman:
     possible_words = ['becode', 'learning', 'mathematics', 'sessions']
 
     def __init__(self) -> None:
-        self.word_to_find = []
-        self.lives = 5
-        self.correctly_guessed_letters = []
-        self.wrongly_guessed_letters = []
-        self.turn_count = 0
-        self.error_count = 0
+        self.word_to_find: List[str] = []
+        self.lives: int = 5
+        self.correctly_guessed_letters: List[str] = []
+        self.wrongly_guessed_letters: List[str] = []
+        self.turn_count: int = 0
+        self.error_count: int = 0
            
-
     def play(self):
         """method that asks the player to enter a letter
         """
