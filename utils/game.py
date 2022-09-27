@@ -1,9 +1,8 @@
-import numpy as np
 from random import randint
 import re
 
 
-class hangman:
+class Hangman:
     """ Class defining the Hangman game: 
     - possible_words: attribute that contains a list of words.
     - word_to_find: attribute that contains a list of strings. Each element will be a letter of the word.
@@ -27,47 +26,58 @@ class hangman:
         self.error_count = 0
            
 
-    def play():
+    def play(self):
         """method that asks the player to enter a letter
         """
 
-        #select one word from the list and breaks it into a list of letters
-        hangman.word_to_find = re.findall("\w",(hangman.possible_words[randint(0,len(hangman.possible_words)-1)]).upper())
-        hangman.correctly_guessed_letters = [""]*len(hangman.word_to_find)
+        #print the word with missing characters
+        print("Guess the word:")
+        print(f"({' '.join(self.correctly_guessed_letters)})\n")
 
-        guessed_letter = input("Guess one letter for the word: \n")
-        if re.match("\w", guessed_letter):
+        guessed_letter = input("Guess one letter for the word: ")
+        if re.match("([A-z])", guessed_letter):
             guessed_letter = guessed_letter.upper()
-            print("The letter entered is : {guessed_letter}")
-            if guessed_letter in hangman.word_to_find:
-                letter_index = np.where(hangman.word_to_find == guessed_letter) # find location of letter index
-                hangman.correctly_guessed_letters[letter_index] = guessed_letter # replace the letter suggested by user
+            print(f"The letter entered is : {guessed_letter}\n")
+            if guessed_letter in self.word_to_find:
+                # find location of letter index and replace the letter suggested by user
+                for i, character in enumerate(self.word_to_find):
+                    if character == guessed_letter:
+                        self.correctly_guessed_letters[i] = guessed_letter
                 return True
             else:
-                hangman.wrongly_guessed_letters.append(guessed_letter)
-                hangman.error_count += 1
-                hangman.lives -=1
+                self.wrongly_guessed_letters.append(guessed_letter)
+                self.error_count += 1
+                self.lives -=1
                 return False
         else:
-            print("You did not enter a letter.")
+            print("You did not enter a letter.\n")
+            self.error_count += 1
+            self.lives -=1
             return False
 
-    def well_played():
+    def well_played(self):
         """method that will provide a game summary if game is won"""
-        print(f"You found the word: {hangman.word_to_find} in {hangman.turn_count} turns with {hangman.error_count} errors!")
+        print(f"You found the word: {self.word_to_find} in {self.turn_count} turns with {self.error_count} error(s)!")
 
+    @staticmethod
     def game_over():
         """method that will stop the game"""
+
         print("------------------ \n Game Over \n ------------------\n")
 
-    def start_game():
+    def start_game(self):
         """method that starts the game"""
-        while(hangman.lives>0):
-            hangman.play()
-            hangman.turn_count += 1
-            if(hangman.correctly_guessed_letters == hangman.word_to_find):
-                hangman.well_played()
+
+        #select one word from the list and breaks it into a list of letters
+        self.word_to_find = re.findall("\w",(self.possible_words[randint(0,len(self.possible_words)-1)]).upper())
+        self.correctly_guessed_letters = ["_"]*len(self.word_to_find)
+
+        while(self.lives>0):
+            self.play()
+            self.turn_count += 1
+            if(self.correctly_guessed_letters == self.word_to_find):
+                self.well_played()
                 return  
         
-        hangman.game_over()
+        self.game_over()
     
