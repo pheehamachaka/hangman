@@ -1,5 +1,5 @@
 from typing import List
-from random import randint
+import random
 import re
 
 
@@ -19,13 +19,15 @@ class Hangman:
     possible_words = ['becode', 'learning', 'mathematics', 'sessions']
 
     def __init__(self) -> None:
-        self.word_to_find: List[str] = []
         self.lives: int = 5
         self.correctly_guessed_letters: List[str] = []
         self.wrongly_guessed_letters: List[str] = []
         self.turn_count: int = 0
         self.error_count: int = 0
-           
+                #select one word from the list and breaks it into a list of letters
+        self.word_to_find = list(random.choice(Hangman.possible_words).upper())
+        self.correctly_guessed_letters = ["_"] * len(self.word_to_find)
+    
     def play(self):
         """method that asks the player to enter a letter
         """
@@ -35,7 +37,7 @@ class Hangman:
         print(f"({' '.join(self.correctly_guessed_letters)})\n")
 
         guessed_letter = input("Guess one letter for the word: ")
-        if re.match("([A-z])", guessed_letter):
+        if re.match("([A-z])", guessed_letter) and len(guessed_letter)==1:
             guessed_letter = guessed_letter.upper()
             print(f"The letter entered is : {guessed_letter}\n")
             if guessed_letter in self.word_to_find:
@@ -43,41 +45,34 @@ class Hangman:
                 for i, character in enumerate(self.word_to_find):
                     if character == guessed_letter:
                         self.correctly_guessed_letters[i] = guessed_letter
-                return True
             else:
                 self.wrongly_guessed_letters.append(guessed_letter)
                 self.error_count += 1
                 self.lives -=1
-                return False
         else:
             print("You did not enter a letter.\n")
             self.error_count += 1
             self.lives -=1
-            return False
 
     def well_played(self):
         """method that will provide a game summary if game is won"""
         print(f"You found the word: {self.word_to_find} in {self.turn_count} turns with {self.error_count} error(s)!")
 
-    @staticmethod
-    def game_over():
+    def game_over(self):
         """method that will stop the game"""
-
         print("------------------ \n Game Over \n ------------------\n")
 
     def start_game(self):
         """method that starts the game"""
 
-        #select one word from the list and breaks it into a list of letters
-        self.word_to_find = re.findall("\w",(self.possible_words[randint(0,len(self.possible_words)-1)]).upper())
-        self.correctly_guessed_letters = ["_"]*len(self.word_to_find)
-
-        while(self.lives>0):
+        while True:
             self.play()
             self.turn_count += 1
-            if(self.correctly_guessed_letters == self.word_to_find):
+            
+            if self.correctly_guessed_letters == self.word_to_find:
                 self.well_played()
-                return  
-        
-        self.game_over()
-    
+                break 
+
+            if self.lives == 0 :
+                self.game_over()
+                break    
